@@ -1,0 +1,313 @@
+
+{% assign rpsSettings = shop.metafields.rapid-search.rpsSettings  %}
+{% assign products = "{{productHandles}}" | split: ',' %}
+{% assign isResultsPage = false %}
+{% assign isKeywordSearch = false %}
+{% assign isRapidSearchExpired = true %}
+{% assign isDebug = false %}
+{% assign themeSettings = rpsSettings.shopify_public_settings.filters_on_collection_themes 
+    | where: "theme_id", theme.id 
+    | first
+    %}
+
+  {% if  isDebug == true or content_for_header contains 'rapid-search-static-abffarbufmhgche6.z01.azurefd.net' 
+  and themeSettings.collection_filter_enabled == true 
+  and themeSettings.use_proxy_search == true 
+  and rpsSettings.enabled == true 
+  and rpsSettings.limit_exceeded == false 
+  and rpsSettings.last_import != false 
+  %}
+
+<script type="text/javascript" async="" src="https://rapid-search-static-abffarbufmhgche6.z01.azurefd.net/resultpage.js?shop=dev-store-for-apps-2.myshopify.com"></script>
+<script>window.RapidSearchCollectionInfo = {{ collection | json }}</script>
+
+{{ 'component-card.css' | asset_url | stylesheet_tag }}
+
+{% assign themeSettings = rpsSettings.shopify_public_settings.filters_on_collection_themes
+  | where: "theme_id", theme.id
+  | first
+  %}
+
+
+{% if themeSettings.columns %}
+  {% assign columnsNumber = themeSettings.columns %}
+{% else %}
+{% assign columnsNumber = 4 %}
+{% endif %}
+
+{% style %}
+  {{themeSettings.custom_styles}}
+{% endstyle %}
+
+{{searchBar}}
+{% render 'result-page-horizontal-menu-skeleton', showSearchBar: isKeywordSearch %}
+<div class="rps-main-container  rps-page-width" style="position: relative"  >
+  
+<style>
+    .rps-loading{
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        background-color: rgb(245 243 243 / 40%);
+        z-index: 999;
+        display: none;
+    }
+</style>
+<div class="rps-loading"></div>
+  {% paginate collection.products by 12 %}
+  <section class="rps-products-container rps-products-grid-{{columnsNumber}}">
+    {%- for product in collection.products -%}
+    <div class="rps-product" >
+    {% render 'card-product', card_product:product, product:product %}
+    </div>
+    {%- endfor -%}
+  </section>
+  
+<div class="rps-pagination-wrapper">
+  <nav class="rps-pagination" role="navigation" aria-label="Pagination">
+    <ul class="rps-pagination__list rps-list-unstyled" role="list"></ul>
+  </nav>
+</div>
+<script>
+    const arrowIcon= (`
+      <svg
+        class="rps-icon rps-icon-caret"
+        style="height: 8 !important"
+        aria-hidden="true" focusable="false" 
+        role="presentation" 
+        version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+        viewBox="0 0 492 492" 
+        style="enable-background:new 0 0 492 492;" 
+        xml:space="preserve">
+          <path 
+            fill-rule="evenodd" 
+            clip-rule="evenodd"
+            fill="currentColor"
+            d="M198.608,246.104L382.664,62.04c5.068-5.056,7.856-11.816,7.856-19.024c0-7.212-2.788-13.968-7.856-19.032l-16.128-16.12
+            C361.476,2.792,354.712,0,347.504,0s-13.964,2.792-19.028,7.864L109.328,227.008c-5.084,5.08-7.868,11.868-7.848,19.084
+            c-0.02,7.248,2.76,14.028,7.848,19.112l218.944,218.932c5.064,5.072,11.82,7.864,19.032,7.864c7.208,0,13.964-2.792,19.032-7.864
+            l16.124-16.12c10.492-10.492,10.492-27.572,0-38.06L198.608,246.104z"/>
+      </svg>
+    `);
+
+    const paginationLink = '' || (document.location.origin + document.location.pathname + '?');
+
+    const getPagination = (currentPage, lastPage) => {
+        if(lastPage === 1) return '';
+        currentPage = +currentPage;
+        lastPage= +lastPage;
+        const delta = 2;
+        const left = currentPage - delta;
+        const right = currentPage + delta;
+        const pages = [];
+        const rangeWithDots = [];
+        const leftArrow= (`<li><a href="${paginationLink}page=${currentPage - 1}" class="rps-pagination__item rps-pagination__item--prev rps-pagination__item-arrow rps-link rps-motion-reduce" aria-label="Page ${currentPage - 1}">${arrowIcon}</a></li>`);
+        const rightArrow= (`<li><a href="${paginationLink}page=${currentPage + 1}" class="rps-pagination__item rps-pagination__item--next rps-pagination__item-arrow rps-link rps-motion-reduce" aria-label="Page ${currentPage + 1}">${arrowIcon}</a></li>`);
+
+
+        if(currentPage > 1) {
+            rangeWithDots.push(leftArrow);
+        }
+
+        let l;
+
+        for (let i = 1; i <= lastPage; i += 1) {
+            if (i === 1 || i === lastPage || (i >= left && i <= right)) {
+                pages.push(i);
+            }
+        }
+
+        for (const page of pages) {
+            if (l) {
+                if (page - l !== 1) {
+                    rangeWithDots.push(`<li><span class="rps-pagination__item">…</span></li>`);
+                }
+            }
+
+            if (page === currentPage) {
+                rangeWithDots.push(`<li><span class="rps-pagination__item rps-pagination__item--current" aria-current="page" aria-label="Page ${currentPage}">${currentPage}</span></li>`);
+            } else {
+                rangeWithDots.push(`<li><a href="${paginationLink}page=${page}" class="rps-pagination__item rps-link" aria-label="Page ${page}">${page}</a></li>`);
+            }
+
+            l = page;
+        }
+        if(currentPage !== lastPage) {
+            rangeWithDots.push(rightArrow);
+        }
+        return rangeWithDots;
+    };
+
+    document.querySelector('.rps-pagination__list').innerHTML = getPagination({{paginate.current_page}},  {{paginate.pages}}).join(' ')
+</script>
+<style>
+  .rps-pagination-wrapper {
+    margin-top: 40px;
+  }
+  
+  @media screen and (min-width: 990px) {
+    .rps-pagination-wrapper {
+      margin-top: 50px;
+    }
+  }
+  
+  .rps-pagination__list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    list-style-type: none;
+    margin :0;
+    padding :0;
+  }
+  
+  .rps-pagination__list > li {
+    flex: 1 0 44px;
+    max-width: 44px;
+  }
+  
+  .rps-pagination__list > li:not(:last-child) {
+    margin-right: 10px;
+  }
+  
+  .rps-pagination__item {
+    color: rgb(var(--color-foreground));
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    height: 44px;
+    width: 100%;
+    padding: 0;
+    text-decoration: none;
+  }
+  
+  a.rps-pagination__item:hover::after {
+    height: 1px;
+  }
+  
+  .rps-pagination__item .rps-icon-caret {
+    height: 6px;
+  }
+  
+  .rps-pagination__item--current::after {
+    height: 1px;
+  }
+  
+  .rps-pagination__item--current::after,
+  .rps-pagination__item:hover::after {
+    content: '';
+    display: block;
+    width: 20px;
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: currentColor;
+  }
+  
+  .rps-pagination__item--next .rps-icon {
+    margin-left: -2px;
+    transform: rotate(180deg) !important;
+  }
+  
+  .rps-pagination__item--next:hover .rps-icon {
+    transform: rotate(180deg) scale(1.07) !important;
+  }
+  
+  .rps-pagination__item--prev .rps-icon {
+    margin-right: -2px;
+    transform: rotate(0) !important;
+  }
+  
+  .rps-pagination__item--prev:hover .rps-icon {
+    transform: rotate(0) scale(1.07) !important;
+  }
+  
+  .rps-pagination__item-arrow:hover::after {
+    display: none;
+  }  
+
+  .rps-pagination a, .rps-pagination .current {
+    display: inline-flex;
+  }
+</style>
+
+  {% endpaginate %}
+</div>
+
+<style>
+  .rps-horizontal-menu-wrapper {
+    margin-top: 4rem;
+    max-width: 1420px !important;
+    margin: 0 auto;
+    padding: 0px;
+  }
+  .rps-page-width {
+      max-width: 1420px;
+      margin: 0 auto;
+      padding: 0px;
+  }
+  .rps-product {
+    padding: 15px 17px;
+    display: grid;
+    grid-gap: 10px;
+    position: relative;
+  }
+
+  .rps-products-container {
+    display: grid !important;
+    grid-gap: 30px !important;
+    border-radius: 3px;
+    overflow: hidden;
+    padding: 2px;
+  }
+
+  .rps-products-grid-2 {
+    grid-template-columns: repeat(2, minmax(100px, 1fr));
+  }
+
+  .rps-products-grid-3 {
+    grid-template-columns: repeat(3, minmax(100px, 1fr));
+  }
+
+  .rps-products-grid-4 {
+    grid-template-columns: repeat(4, minmax(100px, 1fr));
+  }
+
+  .rps-products-grid-5 {
+    grid-template-columns: repeat(5, minmax(100px, 1fr));
+  }
+
+  @media all and (max-width: 768px) {
+    .rps-products-grid-4,
+    .rps-products-grid-5 {
+      grid-template-columns: repeat(3, minmax(100px, 1fr));
+    }
+  }
+
+  @media all and (max-width: 576px) {
+    .rps-products-grid-3,
+    .rps-products-grid-4,
+    .rps-products-grid-5 {
+      grid-template-columns: repeat(2, minmax(50px, 1fr));
+    }
+  }
+
+  @media only screen and (min-width: 750px) {
+    .rps-horizontal-menu-wrapper {
+        padding: 0 30px;
+    }
+  }
+
+
+  .rps-product > div {
+    width: 100% !important;
+  }
+</style>
+
+
+
+{% endif %}
+  

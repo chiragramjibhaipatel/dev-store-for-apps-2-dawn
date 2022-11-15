@@ -1,0 +1,91 @@
+<div class="rps-horizontal-menu-wrapper page-width">
+  <div class="rps-skeleton-results-page-header-wrapper">
+    {% if showSearchBar %}
+    <div class="rps-skeleton-line rps-skeleton-line-search-bar"></div>
+    {% endif %}
+
+    <div class="rps-skeleton-bottom-container">
+      <div class="rps-skeleton-section-container">
+        <div class="rps-skeleton-line"></div>
+        <div class="rps-skeleton-line"></div>
+        <div class="rps-skeleton-line"></div>
+        <div class="rps-skeleton-line"></div>
+        <div class="rps-skeleton-line"></div>
+      </div>
+
+      <div class="rps-skeleton-section-container">
+        <div class="rps-skeleton-line"></div>
+        <div class="rps-skeleton-line"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .rps-skeleton-section-container {
+    display: flex;
+    gap: 20px;
+  }
+
+  .rps-horizontal-menu-wrapper div:empty {
+    display: initial;
+  }
+
+  .rps-skeleton-results-page-header-wrapper {
+    display: flex;
+    background: transparent;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 32px;
+  }
+
+  .rps-skeleton-bottom-container {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: space-between;
+  }
+
+  .rps-skeleton-results-page-header-wrapper .rps-skeleton-line {
+    width: 80px;
+  }
+
+  .rps-skeleton-line.rps-skeleton-line-search-bar {
+    width: 500px;
+    border-radius: 10px;
+  }
+
+  .rps-skeleton-line {
+    height: 40px;
+    border-radius: 30px;
+    background-image: linear-gradient(90deg, #f4f4f4 0px, rgba(229, 229, 229, 0.8) 40px, #f4f4f4 80px);
+    background-size: 600px;
+    animation: shine-lines 2s infinite ease-out;
+  }
+
+  .rps-skeleton-product-container .rps-skeleton-line ~ .rps-skeleton-line {
+    width: 100px;
+  }
+
+  @keyframes shine-lines {
+    0% {
+      background-position: -100px;
+    }
+    40%,
+    100% {
+      background-position: 140px;
+    }
+  }
+
+  @keyframes shine-rps-skeleton-product-image {
+    0% {
+      background-position: -32px;
+    }
+    40%,
+    100% {
+      background-position: 208px;
+    }
+  }
+</style>
