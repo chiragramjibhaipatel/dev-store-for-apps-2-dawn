@@ -215,6 +215,17 @@
           "color_scheme": "background-1"
         }
       }
+    },
+    "content_for_index": [
+
+    ],
+    "blocks": {
+      "16648903236586347788": {
+        "type": "shopify:\/\/apps\/360-product-search-and-filters\/blocks\/sitesearch360_block\/2e555bb5-f102-4fad-b155-0dd1160260ce",
+        "disabled": false,
+        "settings": {
+        }
+      }
     }
   },
   "presets": {
