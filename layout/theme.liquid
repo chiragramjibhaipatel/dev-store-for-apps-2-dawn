@@ -235,6 +235,12 @@
     }
     </script>
     {% render 'rapid-search-settings' %}
+
+ <!--begin-boost-pfs-filter-css-->
+   {% render 'boost-pfs-style' %}
+ <!--end-boost-pfs-filter-css-->
+
+ 
 </head>
 
   <body class="gradient">
@@ -295,5 +301,9 @@
 <!-- **BEGIN** Hextom FSB Integration // Main Include - DO NOT MODIFY -->
     {% render 'hextom_fsb_main', product: product, customer: customer %}
     <!-- **END** Hextom FSB Integration // Main Include - DO NOT MODIFY -->
+
+ <!--begin-boost-pfs-js-->
+   {% render 'boost-pfs' %}
+ <!--end-boost-pfs-js-->
 </body>
 </html>
