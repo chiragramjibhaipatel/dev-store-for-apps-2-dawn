@@ -1,4 +1,34 @@
+{% render 'rapid-search-collection-template' %}
+  
+  
+{% assign rpsSettings = shop.metafields.rapid-search.rpsSettings  %}
+{% assign products = "{{productHandles}}" | split: ',' %}
+{% assign isResultsPage = false %}
+{% assign isKeywordSearch = false %}
+{% assign isRapidSearchExpired = true %}
+{% assign isDebug = false %}
+{% assign themeSettings = rpsSettings.shopify_public_settings.filters_on_collection_themes 
+    | where: "theme_id", theme.id 
+    | first
+    %}
 
+  {% if  isDebug == true or content_for_header contains 'rapid-search-static-abffarbufmhgche6.z01.azurefd.net' 
+  and themeSettings.collection_filter_enabled == true 
+  and themeSettings.use_proxy_search == true 
+  and rpsSettings.enabled == true 
+  and rpsSettings.limit_exceeded == false 
+  and rpsSettings.last_import != false 
+  %}
+
+<script type="text/javascript" async="" src="https://rapid-search-static-abffarbufmhgche6.z01.azurefd.net/resultpage.js?shop=dev-store-for-apps-2.myshopify.com"></script>
+<script>window.RapidSearchCollectionInfo = {{ collection | json }}</script>
+
+<div id="rps-generated" style="display: none !important;" >
+
+{% endif %}
+  
+  
+  
   
   
   
@@ -296,3 +326,31 @@
 {% endschema %}
    
    
+   
+   
+{% assign rpsSettings = shop.metafields.rapid-search.rpsSettings  %}
+{% assign products = "{{productHandles}}" | split: ',' %}
+{% assign isResultsPage = false %}
+{% assign isKeywordSearch = false %}
+{% assign isRapidSearchExpired = true %}
+{% assign isDebug = false %}
+{% assign themeSettings = rpsSettings.shopify_public_settings.filters_on_collection_themes 
+    | where: "theme_id", theme.id 
+    | first
+    %}
+
+  {% if  isDebug == true or content_for_header contains 'rapid-search-static-abffarbufmhgche6.z01.azurefd.net' 
+  and themeSettings.collection_filter_enabled == true 
+  and themeSettings.use_proxy_search == true 
+  and rpsSettings.enabled == true 
+  and rpsSettings.limit_exceeded == false 
+  and rpsSettings.last_import != false 
+  %}
+
+<script type="text/javascript" async="" src="https://rapid-search-static-abffarbufmhgche6.z01.azurefd.net/resultpage.js?shop=dev-store-for-apps-2.myshopify.com"></script>
+<script>window.RapidSearchCollectionInfo = {{ collection | json }}</script>
+
+<!-- rps-generated-div --></div>
+
+{% endif %}
+  
